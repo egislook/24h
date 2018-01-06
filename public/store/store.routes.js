@@ -10,7 +10,7 @@ function storeRoutes(initState){
   
   function Actions(){
     return {
-      'SET_ROUTE': function({ page, query, cookies }){
+      'SET_ROUTE': function({ page, query }){
         this.act('SET_COIN', { symbol: page });
       },
     }
