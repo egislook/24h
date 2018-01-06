@@ -10,5 +10,5 @@ console.log(riothing);
 //app.use('/', require('./func/root.func.js'));
 app.use('/', riothing.route);
 
-app.listen(process.env.PORT || 3000, 
-  () => console.log(`APP Is started at port ${process.env.PORT || 3000}!`));
+app.listen(process.env.PORT || 3001, process.env.IP || "0.0.0.0",
+  () => console.log(`APP Is started!`));
