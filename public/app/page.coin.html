@@ -1,0 +1,26 @@
+<page-coin>
+  <div class="ps:fx t,l:0 h,w:100pc bg:blacka3">
+    
+    <div class="bg:white ps:ab h:100pc t,r:0 mnw:50pc bs:5 p:30px of:auto">
+      <img src={opts.coin.logo}/>
+      <h1 class="p:10px">{opts.coin.name}</h1>
+      <h2 class="c:prima8 ta:l m-t:20px p-l:5px">markets</h2>
+      <table class="w:100pc ta:l p-t:5px p-rl:5px_td">
+        <tr each={market in opts.coin.markets} class="hv-bg:black hv-c:white ts:all">
+          <td>
+            <a href="{market.marketLink}" target="_blank" class="fw:600">{market.name}</a>
+          </td>
+          <td>฿ {market.price.btc}</td>
+          <td>$ {market.volume.usd}</td>
+          <td>{market.volume.pc}</td>
+        </tr>
+      </table>
+    </div>
+    
+    <a href="/" class="ps:ab t,r:0 bd:1px-silver-sld fu-cross p:20px m:15px" />
+  </div>
+  
+  <script>
+    console.log(opts)
+  </script>
+</page-coin>
