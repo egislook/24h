@@ -1,15 +1,15 @@
 <tag-app>
   <div class="ts:ft-1s {'blr:1px': splash} h:100pc">
-    <comp-coins coins={coins}/>
+    <comp-coins coins={coins} ago={ago}/>
     <page-coin if={coin} coin={coin} />
   </div>
-  
+
   <script>
     this.mixin('riothing');
-    
+
     const { coin, coins } = this.store('coins').get();
     this.coin   = coin;
     this.coins  = coins;
-    this.store('coins').track('SET_COIN', this.update)
+    this.track('SET_COIN', this.update);
   </script>
 </tag-app>

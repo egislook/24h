@@ -34,27 +34,30 @@
     <tag-app></tag-app>
 		<!-- js libraries -->
 		<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.min.js" defer></script>-->
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" defer></script>
+		<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" defer></script> -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/riot/3.7.2/riot.min.js" defer></script>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/riot-route/3.1.1/route.min.js" defer></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/riot/3.7.2/riot+compiler.min.js" defer></script>
 		<!--<script type="text/javascript" src="https://cdn.rawgit.com/noneedsystem/riothing/v0.0.6/riothing.js" defer></script>-->
 		<script type="text/javascript" src="https://cdn.rawgit.com/noneedsystem/fucss/0.6.9a/fucss.js" defer></script>
 		<!--<script type="text/javascript" src="/lib/fucss.js" defer></script>-->
-		<script type="text/javascript" src="https://cdn.rawgit.com/noneedsystem/riothing/v0.0.14/riothing.js" defer></script>
-		
+		<!-- <script type="text/javascript" src="https://cdn.rawgit.com/noneedsystem/riothing/v0.0.14/riothing.js" defer></script> -->
+
+
+		<!-- riothing actions -->
+		<script if={ACTIONS} each={action in ACTIONS} type="text/javascript" src={action} defer></script>
 		<!-- riothing stores -->
-		<script if={STORES} each={store in STORES} type="text/javascript" src={store.path} defer></script>
+		<script if={STORES} each={store in STORES} type="text/javascript" src={store} defer></script>
 		<!-- riot components -->
 		<script if={VIEWS} each={view in VIEWS} type="riot/tag" src={view} defer></script>
-		<!-- client initiation using base64 string-->
-		<script if={CLIENT} type="text/javascript" src={CLIENT} defer></script>
+		<!-- client initiation using base64 string -->
+		<script if={SCRIPT} type="text/javascript" src={SCRIPT} defer></script>
 
 		<script type="text/javascript">
 		  this.mixin('riothing');
-		  const { routes: storeRoutes } = this.stores;
-		  console.log(this.opts);
-		  
+		  //const { routes: storeRoutes } = this.stores;
+		  //console.log(this.opts);
+
 		  this.default = {
 		    meta: {
 		      title: 'Poinout app',
@@ -68,9 +71,9 @@
 		    MIXINS: ['./mixin/mixin.global.js'],
 		    CLIENT: ''
 		  };
-		  { meta: storeRoutes.get('meta') }
-		  Object.assign(this, this.default, this.opts, { meta: storeRoutes.get('meta') });
-		  
+		  //{ meta: storeRoutes.get('meta') }
+		  Object.assign(this, this.default, this.opts);
+
 		</script>
 
 	</body>

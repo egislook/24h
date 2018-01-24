@@ -1,52 +1,87 @@
 <comp-coins>
-  
+
   <div class="dp:flx ai:c">
     <div class="p:10px c:black200 m-l:30px">
       <h1 class="p:0 fs:200pc ls:2px fw:300 lh:0.8">coinmarks</h1>
       <p class="fs:90pc fw:600 c:prim">what can be built in 24h</p>
     </div>
-    
+
     <div class="p-t:40px p-b:20px m-r:0">
       <div class="p:5px-10px_span m:5px_span bg:prim_span c:white ta:r">
-        <span each={filter in filters} onclick={handleFilterRemove}>{filter}</span> 
+
+        <span each={filter in filters} onclick={handleFilterRemove}>{filter}</span>
         <span class="bg:white-! p:10px mnw:150px c:black" contenteditable="true" onkeydown={handleFilterAdd} placeholder="filter"></span>
       </div>
       <div class="ta:r fs:80pc p:5px-10px c:grey">
         visible {coins.length} / {opts.coins.length} coins
       </div>
+
+      <div class="fs:90pc m-t:5px">
+        <a each={sorter in sorters} class="p:7px m-rl:2px {
+          'bg:black c:white': sorter.active,
+          'bg:silver c:black': !sorter.active
+        }">
+          {sorter.name}
+          <i if={sorter.active} class="p-r:2px {
+            'fu-chevron-small-down': sorter.active > 0,
+            'fu-chevron-small-up': sorter.active < 0
+          }" />
+        </a>
+      </div>
+
     </div>
   </div>
-  
+
   <div class="p-b:20px">
     <a href="/{coin.symbol}" class="dp:ib p:20px bs:1 m:5px bg:white w:19pc hv-bs:2 fs:80pc ps:rl" each={coin, i in coins} if={i < showMax}>
       <img class="dp:ib w:25px m-b:5px" src="{coin.logo}" /><br/>
       { coin.name.substring( 0, maxLength ) }
-      <span class="r,t:0 p:5px ps:ab fs:80pc">{coin.symbol}</span>
-      <span class="l,t:0 p:5px ps:ab fs:80pc">{coin.price.btc}</span>
-      <span if={fals} each={tag in coin.tags}>{tag}</span>
-      
+      <span onclick={handleClickSymbol(coin)} class="r,t:0 p:5px ps:ab fs:80pc">{coin.symbol}</span>
+      <span if={coin.stats} class="l,t:0 p:5px ps:ab fs:80pc {
+        'c:green': coin.stats.up,
+        'c:red':   !coin.stats.up
+      }">{coin.stats.price.btc}</span>
+      <span class="l,b:0 p:5px ps:ab fs:80pc">{coin.supply}</span>
+      <span class="r,b:0 p:5px ps:ab fs:80pc">{opts.ago(coin.listed)}</span>
+      <span if={false} each={tag in coin.tags}>{tag}</span>
+
       <div if={false}>
         <a href={market.marketLink} target="_blank" if={m < showMaxMarkets} each={market, m in coin.markets}>
           {market.name} {market.volume.usd} {market.price.btc}
         </a>
       </div>
-      
+
     </a>
   </div>
-  
-  <button if={showMax < coins.length} class="fu-plus p:20px bg:prim c:white br:50pc ps:fx r,b:0 bs:2 m:10px" onclick={handleShowMore}>
-    <strong class="ps:ab t,r:0 bg:white p:5px c:black br:50pc mnw,mnh:20px fw:400 fs:70pc bs:1">
+
+  <a if={showMax < coins.length} class="fu-plus p:20px bg:prim c:white br:50pc-50pc-0-0 ps:fx r,b:0 bs:2 m-r:10px p-b:25px" onclick={handleShowMore}>
+    <span class="ps:ab w:100pc b,r,l:0 p:4px bg:blacka2 c:white mnw,mnh:15px fw:600 fs:60pc ff:Questrial">
       {coins.length - showMax}
-    </strong>
-  </button>
-  
+    </span>
+  </a>
+
   <script>
     this.maxLength      = 15;
     this.showMax        = opts.showMax || 30;
     this.showMaxMarkets = opts.showMaxMarkets || 3;
-    this.filters    = ['coinexchange'];
-    this.coins      = filterCoins(opts.coins, this.filters);
-    
+    this.filters    = [];
+    this.sorters    = [
+      { name: 'volume', path: 'stats.volume', active: -1 },
+      { name: 'change', path: 'stats.change.day', active: -1 },
+      { name: 'listed', path: 'listed', active: 1 },
+      { name: 'rank',   path: 'stats.rank', active: 1 },
+      { name: 'symbol', path: 'symbol', active: 0 },
+      { name: 'name',   path: 'name', active: 0 },
+    ];
+    this.coins      = sortCoins(opts.coins, this.sorters) || filterCoins(opts.coins, this.filters);
+
+    this.handleClickSymbol = (coin) => (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.preventUpdate = true;
+      window.open('https://coinmarketcap.com' + coin.link + '#markets', '_blank').focus();
+    }
+
     this.handleFilterAdd = (e) => {
       let val = e.target.textContent;
       if(e.keyCode === 13 && val && val.length > 1){
@@ -58,23 +93,36 @@
         return false;
       }
     }
-    
+
     this.handleFilterRemove = (e) => {
       e.preventUpdate = true;
       let val = e.target.textContent;
       this.filters = this.filters.filter(filter => filter !== val);
       this.update({ coins: filterCoins(opts.coins, this.filters) });
     }
-    
+
     this.handleShowMore = (e) => {
       this.showMax = this.showMax * 2;
     }
-    
+
+    function sortCoins(coins, sorters){
+      return coins.sort( (a, b) => {
+        return sorters.filter(sorter => sorter.active)
+          .map(sorter => {
+            let first   = sorter.path.split('.').reduce((o,i) => o[i], a);
+            let second  = sorter.path.split('.').reduce((o,i) => o[i], b);
+            return sorter.active > 0
+              ? typeof first === 'string'  ? first.localeCompare(second) : first - second
+              : typeof second === 'string' ? second.localeCompare(first) : second - first
+          }).find(val => val !== 0);
+      })
+    }
+
     function filterCoins(coins, filters){
-      return coins.filter((coin) => 
+      return coins.filter((coin) =>
         coin.tags.filter(filter => filters.includes(filter)).length === filters.length
       );
     }
-    
+
   </script>
 </comp-coins>

@@ -1,5 +1,5 @@
 function storeCoins(initState){
-  
+
   return {
     name:       'coins',
     state:      initState,
@@ -7,91 +7,88 @@ function storeCoins(initState){
     models:     { Coin },
     model:      StateCoins,
   };
-  
+
   function Actions(){
     return {
       'SET_COIN': function({ symbol }){
-        const state = this.state.setCoin(symbol);
-        this.trigger('SET_COIN', state);
-        return state;
+        // const state = this.state.setCoin(symbol);
+        // this.trigger('SET_COIN', state);
+        // return state;
       }
     }
   }
-  
+
   function StateCoins(data = {}, prev = {}, def, act){
-    
+
     this.coins  = data && data.coins && data.coins.map(coin => new Coin(coin)) || [];
     this.coin   = null;
-    
+
     this.setCoin = (symbol) => {
       this.coin = symbol && this.coins.filter(coin => coin.symbol === symbol).shift();
+      //console.log(this);
       return { coin: this.coin };
     }
-    
+
+    this.coins = this.coins && this.coins.sort( (a, b) => a.stats && (a.stats.rank - b.stats.rank));
+
     return this;
   }
-  
+
   function Coin(data = {}){
-    
+
     this.name     = data.name || 'none';
     this.symbol   = data.symbol;
     this.rank     = data.rank;
-    this.logo     = data.logo;
+    this.link     = data.link;
+    this.logo     = data.logo || data.id && `https://files.coinmarketcap.com/static/img/coins/32x32/${data.id}.png`;
     this.web      = data.web;
-    this.markets  = getMarkets(data.markets);
-    this.tags     = getTags(this);
-    this.price    = getPrice(this.markets);
+    this.supply   = data.supply;
+    this.listed   = data.listed;
+    this.markets  = data.markets && getMarkets(data.markets);
+    this.tags     = data.markets && getTags(this);
+    this.price    = data.markets && getPrice(this.markets);
+    this.stats    = data.stats   && new Stats(data.stats);
     return this;
-    
-    
+
+
     function getMarkets(markets){
       return markets.filter(market => market.market.indexOf('BTC') >= 0)
         .map(market => new Market(market));
     }
-    
+
     function getTags({ name, symbol, markets }){
       let tags = [];
       tags.push(name.toLowerCase(), symbol.toLowerCase());
       return tags.concat(markets.slice().map(market => market.name.toLowerCase()));
     }
-    
+
     function getPrice(markets){
       let market = markets.slice().shift();
       return {
         usd: market && market.price && market.price.usd || 'NA',
         btc: market && market.price && market.price.btc || 'NA'
       };
-      //return markets.slice().shift().price;
     }
-    // "symbol": "PLX",
-    // "name": "PlexCoin",
-    // "rank": "1203",
-    // "logo": "https://files.coinmarketcap.com/static/img/coins/32x32/plexcoin.png",
-    // "cap": {
-    //   "usd": "None"
-    // },
-    // "price": {
-    //   "usd": "0.0312972"
-    // },
-    // "web": "https://www.plexcoin.com/",
-    // "markets": [
-    //   {
-    //     "link": "/exchanges/cryptopia/",
-    //     "name": "Cryptopia",
-    //     "market": "PLX/BTC",
-    //     "marketLink": "https://www.cryptopia.co.nz/Exchange?market=PLX_BTC",
-    //     "volume": {
-    //       "usd": "2671.85",
-    //       "btc": "0.202328",
-    //       "pc": "100.00%"
-    //     },
-    //     "price": {
-    //       "usd": "0.0312972",
-    //       "btc": "2.37e-06"
-    //     }
-    //   }
   }
-  
+
+  function Stats(data){
+    this.rank   = parseInt(data.rank);
+    this.price  = {
+      usd: Number(data.price_usd),
+      btc: Number(data.price_btc).toFixed(8),
+    };
+    this.change = {
+      hour:   Number(data.percent_change_1h),
+      day:  Number(data.percent_change_24h),
+      weak:   Number(data.percent_change_7d),
+    };
+    this.up     = this.change.day > 0;
+    this.supply = Number(data.max_supply || data.total_supply || data.available_supply);
+    this.cap    = Number(data.market_cap_usd);
+    this.volume = Number(data['24h_volume_usd']);
+    return this;
+  }
+
   function Market({ name, market, marketLink, volume, price }){
     this.name   = name;
     this.market = market;
@@ -105,6 +102,6 @@ function storeCoins(initState){
       btc: Number(price.btc).toFixed(8)
     };
     return this;
-    
+
   }
 }
