@@ -14,13 +14,14 @@ Object.assign(CFG, {
   app
 });
 
-app.use('/', express.static(CFG.PUB_DIR));
+//app.use('/', express.static(CFG.PUB_DIR));
 
-app.response.render = Riothing.utils.renderHTML;
+//app.response.render = Riothing.utils.renderHTML;
+app.get('/', (req, res) => {res.send('tadam')})
 
-app.listen(CFG.PORT, CFG.IP, () => console.log('APP => ' + CFG.url));
+app.listen(CFG.PORT, () => console.log('APP => ' + CFG.url));
 
-Riothing(CFG);
+//Riothing(CFG);
 //riothing.act('APP_INIT');
 
 //riothing.act('APP_INIT');
