@@ -10,7 +10,7 @@ const CFG = {
 };
 
 Object.assign(CFG, {
-  url: `http://${CFG.IP}:${CFG.PORT}`,
+  url: 'https://coinmarks.herokuapp.com' || `http://${CFG.IP}:${CFG.PORT}`,
   app
 });
 
