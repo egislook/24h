@@ -19,7 +19,7 @@ Object.assign(CFG, {
 //app.response.render = Riothing.utils.renderHTML;
 app.get('/', (req, res) => {res.send('tadam')})
 
-app.listen(CFG.PORT, () => console.log('APP => ' + CFG.url));
+app.listen(CFG.PORT, CFG.IP, () => console.log('APP => ' + CFG.url));
 
 //Riothing(CFG);
 //riothing.act('APP_INIT');
