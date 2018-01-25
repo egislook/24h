@@ -29,7 +29,7 @@ function storeCoins(initState){
       return { coin: this.coin };
     }
 
-    this.coins = this.coins && this.coins.sort( (a, b) => a.stats && (a.stats.rank - b.stats.rank));
+    this.coins = this.coins.filter(coin => !!coin.stats).sort( (a, b) => a.stats.rank - b.stats.rank);
 
     return this;
   }
@@ -48,6 +48,7 @@ function storeCoins(initState){
     this.tags     = data.markets && getTags(this);
     this.price    = data.markets && getPrice(this.markets);
     this.stats    = data.stats   && new Stats(data.stats);
+    this.stage    = getStage(this.listed);
     return this;
 
 
@@ -69,23 +70,50 @@ function storeCoins(initState){
         btc: market && market.price && market.price.btc || 'NA'
       };
     }
+
+    function getStage(listed){
+      let now = new Date().getTime();
+      let day = 24 * 60 * 60 * 1000;
+      if(listed + (2 * 30 * day) > now)
+        return 'fresh';
+      if(listed + (8 * 30 * day) > now)
+        return 'new';
+      if(listed + (24 * 30 * day) > now)
+        return 'neo';
+      return 'old';
+    }
   }
 
   function Stats(data){
     this.rank   = parseInt(data.rank);
     this.price  = {
-      usd: Number(data.price_usd),
-      btc: Number(data.price_btc).toFixed(8),
+      usd: Number(data.price_usd).toFixed(2),
+      btc: Number(data.price_btc).toFixed(2),
+      sat: parseInt(Number(data.price_btc) * 100000000)
     };
     this.change = {
       hour:   Number(data.percent_change_1h),
-      day:  Number(data.percent_change_24h),
+      day:    Number(data.percent_change_24h),
       weak:   Number(data.percent_change_7d),
     };
     this.up     = this.change.day > 0;
-    this.supply = Number(data.max_supply || data.total_supply || data.available_supply);
+    this.supply = Number(data.available_supply || data.total_supply || data.max_supply);
     this.cap    = Number(data.market_cap_usd);
     this.volume = Number(data['24h_volume_usd']);
+
+    this.shortVolume = this.volume > 100000
+      ? (this.volume / 1000000).toFixed(1) + 'kk'
+      : this.volume;
+
+    this.shortSupply = this.supply > 100000
+      ? (this.supply / 1000000).toFixed(1) + 'kk'
+      : this.supply;
+
+    //ripple supply
+    this.estimated = (this.supply * Number(this.price.usd) / 39000000000).toFixed(3);
+
+    this.trash = this.volume < 400000;
+
     return this;
   }
 
@@ -101,6 +129,7 @@ function storeCoins(initState){
       usd: price.usd,
       btc: Number(price.btc).toFixed(8)
     };
+
     return this;
 
   }

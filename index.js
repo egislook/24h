@@ -1,6 +1,6 @@
 const express   = global.express = require('express');
 const app       = express();
-const Riothing  = require('../_packs/riothing');
+const Riothing  = require('riothing');
 
 const CFG = {
   PORT: process.env.PORT  || 3001,
@@ -14,7 +14,7 @@ Object.assign(CFG, {
   app
 });
 
-app.use('/', express.static('./public'));
+app.use('/', express.static(CFG.PUB_DIR));
 
 app.response.render = Riothing.utils.renderHTML;
 
