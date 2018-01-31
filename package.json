@@ -8,7 +8,7 @@
     "start": "node index.js",
     "watch": "nodemon -e html,js --watch ../_packs/riothing --watch ./ index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "set NODE_ENV=development && nodemon -e html,js index.js"
+    "dev": "export NODE_ENV=development|| set NODE_ENV=development&& nodemon -e html,js index.js"
   },
   "author": "",
   "license": "ISC",
