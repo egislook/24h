@@ -1,6 +1,6 @@
 const express   = global.express = require('express');
 const app       = express();
-const Riothing  = true && require('riothing') || require('../../_PACKS/riothing/index.js');
+const Riothing  = false && require('riothing') || require('../_packs/riothing/index.js');
 
 const CFG = {
   INIT_ACTION_NAME:   'INIT_APP',

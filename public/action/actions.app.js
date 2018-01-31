@@ -4,7 +4,7 @@ function appActions(){
 
     INIT_APP: function({ url, app }, cb){
       console.log('ACTION_APP_INIT', 'v'+this.VER);
-      //this.store('app').set({ version: this.VER });
+      this.store('app').set({ version: this.VER });
       return this.act('GET_ALL_CONTENT', { url })
         .then(content => this.act('INIT_ROUTER', { app }));
     },
