@@ -1,7 +1,7 @@
 {
   "name": "24h",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "crypto currency experiment page made in 24h",
   "main": "index.js",
   "scripts": {
     "helloWorld": "echo 'hello world;'",
