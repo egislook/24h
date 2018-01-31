@@ -36,7 +36,7 @@ function appActions(){
 
     GET_ALL_CONTENT: function({ url }){
       url = url || '';
-      const external = true && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999';
+      const external = !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999';
       return Promise.all([
         fetch(url + '/coins.json').then(res => res.json()),
         fetch(external || url + '/prices.json').then(res => res.json())

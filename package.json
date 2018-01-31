@@ -6,14 +6,15 @@
   "scripts": {
     "helloWorld": "echo 'hello world;'",
     "start": "node index.js",
-    "dev": "nodemon -e html,js --watch ../_packs/riothing --watch ./ index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "nodemon -e html,js --watch ../_packs/riothing --watch ./ index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "set NODE_ENV=development && nodemon -e html,js index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.4",
-    "riothing": "^0.1.1"
+    "riothing": "^0.1.2"
   },
   "devDependencies": {
     "nodemon": "^1.14.7"
