@@ -21,6 +21,8 @@ app.use('/', express.static(CFG.PUB_DIR));
 
 app.response.render = Riothing.utils.renderHTML;
 
+//app.get('/', (req, res) => setTimeout(function(){res.redirect('/')}, 1000))
+
 app.listen(CFG.PORT, () => console.log('APP => ' + CFG.url));
 
 Riothing(CFG);

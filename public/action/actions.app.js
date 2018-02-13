@@ -3,8 +3,9 @@ function appActions(){
   return {
 
     INIT_APP: function({ url, app }, cb){
-      console.log('ACTION_APP_INIT', 'v'+this.VER);
+      console.log('ACTION_APP_INIT', 'v' + this.VER);
       this.store('app').set({ version: this.VER });
+      
       return this.act('GET_ALL_CONTENT', { url })
         .then(content => this.act('INIT_ROUTER', { app }));
     },
@@ -27,6 +28,10 @@ function appActions(){
       // init app
       riot.mount('tag-app');
     },
+    
+    START_COIN_RECHECK: function(){
+      
+    },
 
     GET_CONTENT: function({ url }){
       url = url || '';
@@ -37,21 +42,22 @@ function appActions(){
 
     GET_ALL_CONTENT: function({ url }){
       url = url || '';
-      const external = !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999';
-      return Promise.all([
-        fetch(url + '/coins.json').then(res => res.json()),
-        fetch(external || url + '/prices.json').then(res => res.json())
-      ]).then( ([content, stats]) => {
-        const statIds = stats.slice().map(stat => stat.id);
-        let index;
-        content.coins.map(coin => {
-          index = statIds.indexOf(coin.id);
-          coin.stats = stats[index];
-          return coin;
+      const links = [
+        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/coins.json'    || url + '/coins.json',
+        !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999'  || url + '/prices.json'
+      ]
+      return Promise.all( links.map(link => fetch(link).then(res => res.json())) )
+        .then( ([coins, prices]) => {
+          const statIds = prices.slice().map(stat => stat.id);
+          let coin;
+          coins = Object.keys(coins).map(id => {
+            coin = coins[id];
+            coin.stats = prices[statIds.indexOf(id)];
+            return coin;
+          });
+          //content.coins = content.coins.slice(0, 5);
+          return this.store('coins').set({ coins })
         })
-        //content.coins = content.coins.slice(0, 5);
-        return this.store('coins').set(content)
-      })
     },
 
     APP_ROUTE: function({ page, query }){
