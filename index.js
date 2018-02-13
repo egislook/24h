@@ -25,7 +25,7 @@ app.response.render = Riothing.utils.renderHTML;
 
 app.listen(CFG.PORT, () => console.log('APP => ' + CFG.url));
 
-Riothing(CFG);
+Riothing(CFG).then(riothing => riothing.act('TRIGGER_EXTERNAL_COIN_UPDATE'));
 //riothing.act('APP_INIT');
 
 //riothing.act('APP_INIT');

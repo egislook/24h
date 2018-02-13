@@ -29,8 +29,11 @@ function appActions(){
       riot.mount('tag-app');
     },
     
-    START_COIN_RECHECK: function(){
-      
+    TRIGGER_EXTERNAL_COIN_UPDATE: function(){
+      !this.DEV && this.SERVER && 
+        fetch('http://scrapis.herokuapp.com/coinmarks/update')
+          .then(res => res.json())
+          .then(console.log)
     },
 
     GET_CONTENT: function({ url }){
