@@ -37,8 +37,9 @@
   </div>
 
   <div class="p-b:20px">
-    <a href="/{coin.symbol}" each={coin, i in coins} if={i < showMax}
-      class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc hv-bs:2 ts:bs fs:80pc ps:rl">
+    <a href="/{coin.symbol}" each={coin, i in coins}
+      show={i < showMax}
+      class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc hv-bs:2 ts:bs fs:80pc ps:rl ts:all">
       <img class="dp:ib w:25px m-b:5px" src="{coin.logo}" /><br/>
       { coin.name.substring( 0, maxLength ) }
       <span onclick={handleClickSymbol(coin)} class="r,t:0 p:5px ps:ab fs:80pc">
@@ -85,6 +86,13 @@
     ];
 
     this.coins      = sortCoins.bind(this)(opts.coins, this.sorters) || filterCoins(opts.coins, this.filters);
+    
+    this.on('update', () => {
+      console.log('update');
+      requestAnimationFrame( () => {
+        console.log('before animation');
+      });
+    })
 
     this.handleClickCurrencer = (e) => (this.btc = !this.btc);
     this.handleClickTrash     = (e) => {

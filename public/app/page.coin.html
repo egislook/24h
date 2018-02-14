@@ -1,59 +1,64 @@
 <page-coin>
-  <div class="ps:fx t,l:0 h,w:100pc bg:blacka3">
+    <a href="/" class="ps:fx t,l:0 h,w:100pc bg:blacka3 ts:all {
+      'op:0 vsb:hd': !opts.coin, 
+      'op:10 vsb:vs': opts.coin
+    }"/>
 
-    <div class="bg:white ps:ab h:100pc t,r:0 mnw:50pc bs:5 of:auto">
-      <div class="ta:l">
-        <a href="/" class="fs:140pc c:black200 t,l:0 fu-arrow-left p:10px-30px" />
-      </div>
+    <div class="bg:white ps:fx h:100pc t,r:0 mnw:50pc bs:5 of:auto ts:all {
+      'trl:100pc-0': !opts.coin
+    }">
       
-      <div class="dp:flx p:10px-25px ai:c">
-        <div>
-          <img src={opts.coin.logo}/>
-          <h1 class="p-b:10px">{opts.coin.name}</h1>
-          <div class="c:grey ts:all_a">
-            <a href="https://coinmarketcap.com{opts.coin.link}" target="_blank" class="hv-c:black">coinmarketcap</a><br/>
-            <a if={opts.coin.website} href="{opts.coin.website}" target="_blank" class="hv-c:black">website</a>
+      <div if={opts.coin}>
+        <a href="/" class="fs:140pc c:black200 fu-arrow-right p:20px-30px md-t,l:0 md-ps:ab mdx-ps:fx mdx-b,r:0 bg:white" />
+        
+        <div class="dp:flx p:25px ai:c">
+          <div>
+            <img src={opts.coin.logo}/>
+            <h1 class="p-b:10px">{opts.coin.name}</h1>
+            <div class="c:grey ts:all_a">
+              <a href="https://coinmarketcap.com{opts.coin.link}" target="_blank" class="hv-c:black">coinmarketcap</a><br/>
+              <a if={opts.coin.website} href="{opts.coin.website}" target="_blank" class="hv-c:black">website</a>
+            </div>
+          </div>
+          
+          <div class="m-r:0 ta:r fs:90pc">
+            <h4 class="c:prima8 bd-b-w:1px bd-c:silver p-rl:5px">stats</h4>
+            <div class="p-rl:5px">
+              listed: <strong>{opts.ago(opts.coin.listed)}</strong><br/>
+              supply: <strong>{opts.coin.stats.shortSupply}</strong><br/>
+              cap: <strong>{opts.coin.stats.shortCap}</strong><br/>
+              price: <strong>{opts.coin.stats.price.sat}</strong> (${opts.coin.stats.price.usd})<br/>
+              volume: <strong>{opts.coin.stats.shortVolume}</strong> ({opts.coin.stats.estimated})<br/>
+              change: <strong class="{'c:green': opts.coin.stats.up, 'c:red': !opts.coin.stats.up}">{opts.coin.stats.change.day}%</strong>
+            </div>
           </div>
         </div>
         
-        <div class="m-r:0 ta:r fs:90pc">
-          <h4 class="c:prima8 bd-b-w:1px bd-c:silver p-rl:5px">stats</h4>
-          <div class="p-rl:5px">
-            listed: <strong>{opts.ago(opts.coin.listed)}</strong><br/>
-            supply: <strong>{opts.coin.stats.shortSupply}</strong><br/>
-            cap: <strong>{opts.coin.stats.shortCap}</strong><br/>
-            price: <strong>{opts.coin.stats.price.sat}</strong> (${opts.coin.stats.price.usd})<br/>
-            volume: <strong>{opts.coin.stats.shortVolume}</strong> ({opts.coin.stats.estimated})<br/>
-            change: <strong class="{'c:green': opts.coin.stats.up, 'c:red': !opts.coin.stats.up}">{opts.coin.stats.change.day}%</strong>
-          </div>
+        <div class="ta:l p:25px">
+          <h2 if={opts.coin.markets} class="c:prima8 ta:l dp:ib p-rl:5px">markets</h2>
+          <small class="c:silver">last update ({opts.ago(opts.coin.updated)})</small>
+          <table class="w:100pc ta:l p-t:5px p-rl:5px_td bd-t-w:1px bd-c:silver">
+            <tr each={market in opts.coin.markets}>
+              <td>
+                <strong class="m-l:0">{market.name.substring(0, 15)}</strong>
+              </td>
+              <td if={false}>฿</td>
+              <td>{market.pc}%</td>
+              <td>${market.price}</td>
+              <td if={false}>$ {market.volume}</td>
+              <td class="ta:r w:200px">
+                <a each={exchange in market.exchanges} 
+                  href="{exchange.link}" 
+                  target="_blank" 
+                  class="p:4px-3px br:2px lh:1 hv-bg:black c:grey fw:600 fs:80pc hv-c:white ts:all">
+                  {exchange.type[1]}
+                </a>
+              </td>
+            </tr>
+          </table>
+          
         </div>
       </div>
-      
-      <div class="ta:l p:25px">
-        <h2 if={opts.coin.markets} class="c:prima8 ta:l dp:ib p-rl:5px">markets</h2>
-        <small class="c:silver">last update ({opts.ago(opts.coin.updated)})</small>
-        <table class="w:100pc ta:l p-t:5px p-rl:5px_td bd-t-w:1px bd-c:silver">
-          <tr each={market in opts.coin.markets}>
-            <td>
-              <strong class="m-l:0">{market.name.substring(0, 15)}</strong>
-            </td>
-            <td if={false}>฿</td>
-            <td>{market.pc}%</td>
-            <td>${market.price}</td>
-            <td if={false}>$ {market.volume}</td>
-            <td class="ta:r w:200px">
-              <a each={exchange in market.exchanges} 
-                href="{exchange.link}" 
-                target="_blank" 
-                class="p:4px-3px br:2px lh:1 hv-bg:black c:grey fw:600 fs:80pc hv-c:white ts:all">
-                {exchange.type[1]}
-              </a>
-            </td>
-          </tr>
-        </table>
-        
-      </div>
-    </div>
 
   </div>
 
