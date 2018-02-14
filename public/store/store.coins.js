@@ -35,14 +35,13 @@ function storeCoins(initState){
   }
 
   function Coin(data = {}){
-    
     this.name     = data.name || 'none';
     this.website  = data.extras && data.extras.website;
+    this.updated  = data.extras && data.extras.timestamp;
     this.symbol   = data.symbol;
     this.rank     = data.rank;
     this.link     = data.link;
     this.logo     = data.logo || data.id && `https://files.coinmarketcap.com/static/img/coins/32x32/${data.id}.png`;
-    this.web      = data.web;
     this.supply   = data.supply;
     this.listed   = data.listed;
     this.markets  = data.extras   && data.extras.markets && getMarkets(data.extras.markets, this.symbol);
@@ -101,13 +100,9 @@ function storeCoins(initState){
     this.cap    = Number(data.market_cap_usd);
     this.volume = Number(data['24h_volume_usd']);
 
-    this.shortVolume = this.volume > 100000
-      ? (this.volume / 1000000).toFixed(1) + 'kk'
-      : this.volume;
-
-    this.shortSupply = this.supply > 100000
-      ? (this.supply / 1000000).toFixed(1) + 'kk'
-      : this.supply;
+    this.shortVolume  = short(this.volume);
+    this.shortSupply  = short(this.supply);
+    this.shortCap     = short(this.cap);
 
     //ripple supply
     this.estimated = (this.supply * Number(this.price.usd) / 39000000000).toFixed(3);
@@ -115,6 +110,17 @@ function storeCoins(initState){
     this.trash = this.volume < 400000;
 
     return this;
+    
+    function short(val){
+      if(val > 1000000000)
+        return (val / 1000000000).toFixed(1) + 'kkk';
+      if(val > 1000000)
+        return (val / 1000000).toFixed(1) + 'kk';
+      if(val > 1000)
+        return (val / 1000).toFixed(1) + 'k';
+      
+      return val;
+    }
   }
 
   function Market({ name, volume, price, pc, exchanges }, symbol){
