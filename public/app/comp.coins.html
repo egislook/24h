@@ -37,7 +37,8 @@
   </div>
 
   <div class="p-b:20px">
-    <a href="/{coin.symbol}" class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc hv-bs:2 fs:80pc ps:rl" each={coin, i in coins} if={i < showMax}>
+    <a href="/{coin.symbol}" each={coin, i in coins} if={i < showMax}
+      class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc hv-bs:2 ts:bs fs:80pc ps:rl">
       <img class="dp:ib w:25px m-b:5px" src="{coin.logo}" /><br/>
       { coin.name.substring( 0, maxLength ) }
       <span onclick={handleClickSymbol(coin)} class="r,t:0 p:5px ps:ab fs:80pc">
@@ -62,7 +63,7 @@
 
   <a onclick={handleClickCurrencer} class="c:white p:10px-15px br:0-50pc-50pc-0 ps:fx l,t:0 m-t:50px hv-p-l:20px ts:all bs:2 {
     'bg:orange':  btc,
-    'bg:green':   !btc
+    'bg:prim':   !btc
   }">{btc ? '฿': '$'}</a>
 
   <script>
@@ -79,8 +80,8 @@
       { name: 'price',  key: 'stats.price.usd', active: 0 },
       { name: 'supply', key: 'stats.supply', active: 0 },
       { name: 'listed', key: 'listed', active: 0 },
-      { name: 'symbol', key: 'symbol', active: 0 },
-      { name: 'name',   key: 'name', active: 0 },
+      //{ name: 'symbol', key: 'symbol', active: 0 },
+      //{ name: 'name',   key: 'name', active: 0 },
     ];
 
     this.coins      = sortCoins.bind(this)(opts.coins, this.sorters) || filterCoins(opts.coins, this.filters);
