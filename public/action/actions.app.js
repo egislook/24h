@@ -40,15 +40,17 @@ function appActions(){
       url = url || '';
       const links = [
         !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/coins.json'    || url + '/coins.json',
-        !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999'  || url + '/prices.json'
+        !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999'  || url + '/prices.json',
+        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/extras.json'    || url + '/extras.json',
       ]
       return Promise.all( links.map(link => fetch(link).then(res => res.json())) )
-        .then( ([coins, prices]) => {
+        .then( ([coins, prices, extras]) => {
           const statIds = prices.slice().map(stat => stat.id);
           let coin;
           coins = Object.keys(coins).map(id => {
             coin = coins[id];
-            coin.stats = prices[statIds.indexOf(id)];
+            coin.stats  = prices[statIds.indexOf(id)];
+            coin.extras = extras[id];
             return coin;
           });
           //content.coins = content.coins.slice(0, 5);

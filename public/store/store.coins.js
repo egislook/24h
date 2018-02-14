@@ -35,8 +35,9 @@ function storeCoins(initState){
   }
 
   function Coin(data = {}){
-
+    
     this.name     = data.name || 'none';
+    this.website  = data.extras && data.extras.website;
     this.symbol   = data.symbol;
     this.rank     = data.rank;
     this.link     = data.link;
@@ -44,17 +45,16 @@ function storeCoins(initState){
     this.web      = data.web;
     this.supply   = data.supply;
     this.listed   = data.listed;
-    this.markets  = data.markets && getMarkets(data.markets);
-    this.tags     = data.markets && getTags(this);
-    this.price    = data.markets && getPrice(this.markets);
-    this.stats    = data.stats   && new Stats(data.stats);
+    this.markets  = data.extras   && data.extras.markets && getMarkets(data.extras.markets, this.symbol);
+    this.tags     = data.markets  && getTags(this);
+    this.price    = data.markets  && getPrice(this.markets);
+    this.stats    = data.stats    && new Stats(data.stats);
     this.stage    = getStage(this.listed);
     return this;
 
 
-    function getMarkets(markets){
-      return markets.filter(market => market.market.indexOf('BTC') >= 0)
-        .map(market => new Market(market));
+    function getMarkets(markets, symbol){
+      return Object.keys(markets).map(id => new Market(markets[id], symbol)).sort((a, b) => b.pc - a.pc);
     }
 
     function getTags({ name, symbol, markets }){
@@ -117,18 +117,17 @@ function storeCoins(initState){
     return this;
   }
 
-  function Market({ name, market, marketLink, volume, price }){
+  function Market({ name, volume, price, pc, exchanges }, symbol){
     this.name   = name;
-    this.market = market;
-    this.marketLink = marketLink;
-    this.volume = {
-      usd: volume.usd,
-      pc: volume.pc
-    };
-    this.price  = {
-      usd: price.usd,
-      btc: Number(price.btc).toFixed(8)
-    };
+    this.volume = volume;
+    this.price  = price;
+    this.pc     = pc;
+    
+    this.exchanges = exchanges.map(exchange => ({
+      symbol: exchange.symbol,
+      link:   exchange.link,
+      type:   exchange.symbol.split('/'),
+    })).filter(exchange => exchange.type[0] === symbol);
 
     return this;
 

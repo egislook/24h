@@ -1,26 +1,57 @@
 <page-coin>
   <div class="ps:fx t,l:0 h,w:100pc bg:blacka3">
 
-    <div class="bg:white ps:ab h:100pc t,r:0 mnw:50pc bs:5 p:30px of:auto">
-      <img src={opts.coin.logo}/>
-      <h1 class="p:10px">{opts.coin.name}</h1>
-      <h2 class="c:prima8 ta:l m-t:20px p-l:5px">markets</h2>
-      <table class="w:100pc ta:l p-t:5px p-rl:5px_td">
-        <tr each={market in opts.coin.markets} class="hv-bg:black hv-c:white ts:all">
+    <div class="bg:white ps:ab h:100pc t,r:0 mnw:50pc bs:5 of:auto">
+      <div class="ta:l">
+        <a href="/" class="fs:140pc c:black200 t,l:0 fu-arrow-left p:10px-30px" />
+      </div>
+      
+      <div>
+        <img src={opts.coin.logo}/>
+        <h1 class="p-b:15px">{opts.coin.name}</h1>
+      </div>
+      
+      <div class="dp:flx p:10px-30px">
+        <div class="m-l:0 ta:l fs:90pc">
+          <h4 class="c:prima8">stats</h4>
+          listed: <strong>{opts.ago(opts.coin.listed)}</strong><br/>
+          price: <strong>฿{opts.coin.stats.price.btc}</strong> (${opts.coin.stats.price.usd})<br/>
+          supply: <strong>{opts.coin.stats.shortSupply}</strong><br/>
+          volume: <strong>{opts.coin.stats.shortVolume}</strong> ({opts.coin.stats.estimated})<br/>
+          change: <strong class="{'c:green': opts.coin.stats.up, 'c:red': !opts.coin.stats.up}">{opts.coin.stats.change.day}%</strong>
+        </div>
+        <div class="c:grey p-rl:7px m-r:0 ta:r ts:all_a">
+          <h4 class="c:prima8">links</h4>
+          <a href="https://coinmarketcap.com{opts.coin.link}" target="_blank" class="hv-c:black">coinmarketcap</a><br/>
+          <a if={opts.coin.website} href="{opts.coin.website}" target="_blank" class="hv-c:black">website</a>
+        </div>
+      </div>
+      
+      <h2 if={opts.coin.markets} class="c:prima8 ta:l p-l:30px">markets</h2>
+      <table class="w:100pc ta:l p-t:5px p-rl:5px_td p-rl:25px">
+        <tr each={market in opts.coin.markets} class="">
           <td>
-            <a href="{market.marketLink}" target="_blank" class="fw:600">{market.name}</a>
+            <strong class="m-l:0">{market.name.substring(0, 15)}</strong>
           </td>
-          <td>฿ {market.price.btc}</td>
-          <td>$ {market.volume.usd}</td>
-          <td>{market.volume.pc}</td>
+          <td if={false}>฿</td>
+          <td>{market.pc}%</td>
+          <td>${market.price}</td>
+          <td if={false}>$ {market.volume}</td>
+          <td class="ta:r w:200px">
+            <a each={exchange in market.exchanges} 
+              href="{exchange.link}" 
+              target="_blank" 
+              class="p:4px-3px br:2px lh:1 hv-bg:black c:grey fw:600 fs:80pc hv-c:white ts:all">
+              {exchange.type[1]}
+            </a>
+          </td>
         </tr>
       </table>
     </div>
 
-    <a href="/" class="ps:ab t,r:0 bd:1px-silver-sld fu-cross p:20px m:15px" />
   </div>
 
   <script>
-    console.log('Coin page: ', opts)
+    //console.log('Coin page: ', opts)
   </script>
 </page-coin>
