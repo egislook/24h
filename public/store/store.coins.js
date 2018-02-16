@@ -29,8 +29,6 @@ function storeCoins(initState){
       return { coin: this.coin };
     }
 
-    this.coins = this.coins.filter(coin => !!coin.stats).sort( (a, b) => a.stats.rank - b.stats.rank);
-
     return this;
   }
 
@@ -97,7 +95,7 @@ function storeCoins(initState){
     };
     this.up     = this.change.day > 0;
     this.supply = Number(data.available_supply || data.total_supply || data.max_supply);
-    this.cap    = Number(data.market_cap_usd);
+    this.cap    = parseInt(data.market_cap_usd);
     this.volume = Number(data['24h_volume_usd']);
 
     this.shortVolume  = short(this.volume);

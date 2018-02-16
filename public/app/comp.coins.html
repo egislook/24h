@@ -17,20 +17,21 @@
       </div>
 
       <div class="fs:90pc m-tr:5px m:2px_a">
-        <a title="hide trash coins" onclick={handleClickTrash} class="bd-w:1px c:silver800 p:8px p-b:7px {
-          'fu-eye bg:black c:white-!':  trash,
-          'fu-trash':   !trash
-        }"></a>
-        <a onclick={handleClickSorter(sorter, index)} each={sorter, index in sorters} class="p:7px m-rl:2px {
+        <a title="hide trash coins" onclick={handleClickTrash} class="bd-w:1px c:silver800 p:7px-10px {
+          'bg:black c:white-!': trash,
+        }">
+          <i class="fu-funnel ts:tf fs:90pc {'scy:1n': !trash}" />
+          vol > 0.4kk
+        </a>
+        
+        <a onclick={handleClickSorter(sorter, index)} each={sorter, index in sorters} class="p:7px-15px-7px-10px m-rl:2px ts:bg {
           'bg:black c:white':   sorter.active,
           'bg:silver c:black':  !sorter.active
         }">
+          <i class="fu-sort ts:tf {'scy:1n': sorter.active > 0}" />
           {sorter.name}
-          <i if={sorter.active} class="p-r:2px {
-            'fu-chevron-small-down':  sorter.active > 0,
-            'fu-chevron-small-up':    sorter.active < 0
-          }" />
         </a>
+        
       </div>
 
     </div>
@@ -42,7 +43,7 @@
       class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc hv-bs:2 ts:bs fs:80pc ps:rl ts:all">
       <img class="dp:ib w:25px m-b:5px" src="{coin.logo}" /><br/>
       { coin.name.substring( 0, maxLength ) }
-      <span onclick={handleClickSymbol(coin)} class="r,t:0 p:5px ps:ab fs:80pc">
+      <span class="r,t:0 p:5px ps:ab fs:80pc">
         <strong class="bd-c:silver800 bd-w:1px p:1px-3px br:2px" title={opts.ago(coin.listed)}>{coin.stage}</strong>
         {coin.symbol}
       </span>
@@ -75,43 +76,37 @@
     this.trash      = true;
     this.filters    = [];
     this.sorters    = [
-      { name: 'rank',   key: 'stats.rank', active: 1 },
+      { name: 'rank',   key: 'stats.cap', active: 1 },
       { name: 'volume', key: 'stats.volume', active: 0 },
       { name: 'change', key: 'stats.change.day', active: 0 },
-      { name: 'price',  key: 'stats.price.usd', active: 0 },
+      { name: 'price',  key: 'stats.price.sat', active: 0 },
       { name: 'supply', key: 'stats.supply', active: 0 },
       { name: 'listed', key: 'listed', active: 0 },
       //{ name: 'symbol', key: 'symbol', active: 0 },
       //{ name: 'name',   key: 'name', active: 0 },
     ];
 
-    this.coins      = sortCoins.bind(this)(opts.coins, this.sorters) || filterCoins(opts.coins, this.filters);
+    this.coins = sortCoins.bind(this)(opts.coins, this.sorters) || filterCoins(opts.coins, this.filters);
     
-    this.on('update', () => {
-      console.log('update');
-      requestAnimationFrame( () => {
-        console.log('before animation');
-      });
-    })
+    // this.on('update', () => {
+    //   console.log('update');
+    //   requestAnimationFrame( () => {
+    //     console.log('before animation');
+    //   });
+    // })
 
     this.handleClickCurrencer = (e) => (this.btc = !this.btc);
     this.handleClickTrash     = (e) => {
       this.trash = !this.trash;
       this.coins = sortCoins.bind(this)(this.opts.coins, this.sorters);
-      console.log(this.coins);
-    }
-
-    this.handleClickSymbol = (coin) => (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.preventUpdate = true;
-      window.open('https://coinmarketcap.com' + coin.link + '#markets', '_blank').focus();
+      //console.log(this.coins);
     }
 
     this.handleClickSorter = (sorter, index) => (e) => {
-      sorter.active = sorter.active > 0 ? -1 : sorter.active + 1;
-      this.sorters.splice(index, 1);
-      this.sorters.unshift(sorter);
+      this.sorters.map( (s, i) => index !== i && (s.active = 0) || s);
+      sorter.active = sorter.active > 0 ? -1 : 1;
+      // this.sorters.splice(index, 1);
+      // this.sorters.unshift(sorter);
       this.coins = sortCoins.bind(this)(this.opts.coins, this.sorters)
       //console.log(sorter, index, this);
     }
@@ -147,7 +142,7 @@
           .map(sorter => {
             let first   = sorter.key.split('.').reduce((o, i) => o[i], a);
             let second  = sorter.key.split('.').reduce((o, i) => o[i], b);
-            return sorter.active > 0
+            return sorter.active < 0
               ? typeof first === 'string'  ? first.localeCompare(second) : first - second
               : typeof second === 'string' ? second.localeCompare(first) : second - first
           }).find(val => val !== 0);
