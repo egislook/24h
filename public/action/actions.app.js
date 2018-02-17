@@ -39,9 +39,9 @@ function appActions(){
     GET_ALL_CONTENT: function({ url }){
       url = url || '';
       const links = [
-        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/coins.json'    || url + '/coins.json',
-        !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999'  || url + '/prices.json',
-        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/extras.json'    || url + '/extras.json',
+        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/coins.json'    || url + '/data/coins.json',
+        !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999'  || url + '/data/prices.json',
+        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/extras.json'    || url + '/data/extras.json',
       ]
       return Promise.all( links.map(link => fetch(link).then(res => res.json())) )
         .then( ([coins, prices, extras]) => {
