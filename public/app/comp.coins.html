@@ -8,7 +8,15 @@
 
     <div class="md-p-t:40px p-b:10px m-r:0">
 
-      <div if={false} class="p:5px-10px_span m:5px_span bg:prim_span c:white ta:r">
+      <div class="p:7px-15px_span m:2px_span bg:black_span c:white ta:r fs:90pc crs:pt_span">
+        <span title="hide trash coins" onclick={handleClickTrash} class="ts:bg {
+          'bg:black c:white':   trash,
+          'bg:silver c:black':  !trash
+        }">
+          <i class="fu-funnel ts:tf fs:90pc {'scy:1n': !trash}" />
+          vol > 0.4kk
+        </span>
+        
         <span each={filter in filters} onclick={handleFilterRemove}>{filter}</span>
         <span class="bg:white-! p:10px mnw:150px c:black" contenteditable="true" onkeydown={handleFilterAdd} placeholder="filter"></span>
       </div>
@@ -17,15 +25,6 @@
       </div>
 
       <div class="fs:90pc m-tr:5px m:2px_a ta:r">
-        
-        <a title="hide trash coins" onclick={handleClickTrash} class="p:7px-10px ts:bg {
-          'bg:black c:white':   trash,
-          'bg:silver c:black':  !trash
-        }">
-          <i class="fu-funnel ts:tf fs:90pc {'scy:1n': !trash}" />
-          vol > 0.4kk
-        </a><br />
-        
         <a onclick={handleClickSorter(sorter, index)} each={sorter, index in sorters} class="p:7px-15px-7px-10px ts:bg {
           'bg:black c:white':   sorter.active,
           'bg:silver c:black':  !sorter.active
@@ -106,20 +105,21 @@
     }
 
     this.handleClickSorter = (sorter, index) => (e) => {
+      e.preventUpdate = true;
       this.sorters.map( (s, i) => index !== i && (s.active = 0) || s);
       sorter.active = sorter.active > 0 ? -1 : 1;
       // this.sorters.splice(index, 1);
       // this.sorters.unshift(sorter);
-      this.coins = sortCoins.bind(this)(this.opts.coins, this.sorters)
+      this.update({ coins: sortCoins.bind(this)(filterCoins(opts.coins, this.filters), this.sorters) });
       //console.log(sorter, index, this);
     }
 
     this.handleFilterAdd = (e) => {
       let val = e.target.textContent;
       if(e.keyCode === 13 && val && val.length > 1){
-        this.filters.push(val);
+        this.filters.push(val.toLowerCase());
         e.target.textContent = '';
-        this.update({ coins: filterCoins(opts.coins, this.filters) });
+        this.update({ coins: filterCoins(this.coins, this.filters) });
         e.preventDefault();
         e.stopPropagation();
         return false;
@@ -130,7 +130,7 @@
       e.preventUpdate = true;
       let val = e.target.textContent;
       this.filters = this.filters.filter(filter => filter !== val);
-      this.update({ coins: filterCoins(opts.coins, this.filters) });
+      this.update({ coins: sortCoins.bind(this)(filterCoins(opts.coins, this.filters), this.sorters) })
     }
 
     this.handleShowMore = (e) => {
@@ -153,7 +153,7 @@
     }
 
     function filterCoins(coins, filters){
-      return coins.filter((coin) =>
+      return coins.filter(coin => 
         coin.tags.filter(filter => filters.includes(filter)).length === filters.length
       );
     }

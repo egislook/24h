@@ -45,10 +45,10 @@ function storeCoins(initState){
     this.supply   = data.supply;
     this.listed   = data.listed;
     this.markets  = data.extras   && data.extras.markets && getMarkets(data.extras.markets, this.symbol);
-    this.tags     = data.markets  && getTags(this);
     this.price    = data.markets  && getPrice(this.markets);
     this.stats    = data.stats    && new Stats(data.stats);
     this.stage    = getStage(this.listed);
+    this.tags     = getTags(this);
     return this;
 
 
@@ -56,10 +56,12 @@ function storeCoins(initState){
       return Object.keys(markets).map(id => new Market(markets[id], symbol)).sort((a, b) => b.pc - a.pc);
     }
 
-    function getTags({ name, symbol, markets }){
-      let tags = [];
-      tags.push(name.toLowerCase(), symbol.toLowerCase());
-      return tags.concat(markets.slice().map(market => market.name.toLowerCase()));
+    function getTags({ name, symbol, markets, stage }){
+      let tags = [name.toLowerCase(), symbol.toLowerCase(), stage.toLowerCase()];
+      /** TODO!!!
+       *  1. remove special letters  
+       */
+      return markets && tags.concat(markets.slice().map(market => market.name.toLowerCase())) || tags;
     }
 
     function getPrice(markets){
@@ -123,7 +125,8 @@ function storeCoins(initState){
     }
   }
 
-  function Market({ name, volume, price, pc, exchanges }, symbol){
+  function Market({ name, volume, price, pc, exchanges, id }, symbol){
+    this.id     = id;
     this.name   = name;
     this.volume = volume;
     this.price  = price;
