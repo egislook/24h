@@ -8,24 +8,17 @@
 
     <div class="md-p-t:40px p-b:10px m-r:0">
 
-      <div class="p:7px-15px_span m:2px_span bg:black_span c:white ta:r fs:90pc crs:pt_span">
-        <span title="hide trash coins" onclick={handleClickTrash} class="ts:bg {
-          'bg:black c:white':   trash,
-          'bg:silver c:black':  !trash
-        }">
-          <i class="fu-funnel ts:tf fs:90pc {'scy:1n': !trash}" />
-          vol > 0.4kk
-        </span>
+      <div class="p:7px-15px_span m:2px_span c:white ta:r fs:90pc crs:pt_span ts:bg_span">
         
-        <span each={filter in filters} onclick={handleFilterRemove}>{filter}</span>
-        <span class="bg:white-! p:10px mnw:150px c:black" contenteditable="true" onkeydown={handleFilterAdd} placeholder="filter eg:bittrex"></span>
+        <span each={matcher in matchers} onclick={handleMatcherRemove} class="bg:black c:white">{matcher.name}</span>
+        <span class="bg:white p:10px mnw:150px c:black" contenteditable="true" onkeydown={handeMatcherAdd} placeholder="search eg:bittrex"></span>
       </div>
       <div class="ta:r fs:80pc p:5px-10px c:grey">
         visible {coins.length} / {opts.coins.length} coins
       </div>
 
       <div class="fs:90pc m-tr:5px m:2px_a ta:r">
-        <a onclick={handleClickSorter(sorter, index)} each={sorter, index in sorters} class="p:7px-15px-7px-10px ts:bg {
+        <a onclick={handleSorterClick(sorter, index)} each={sorter, index in sorters} class="p:7px-15px-7px-10px ts:bg {
           'bg:black c:white':   sorter.active,
           'bg:silver c:black':  !sorter.active
         }">
@@ -67,18 +60,38 @@
 
   <a onclick={handleClickCurrencer} class="c:white p:10px-15px br:0-50pc-50pc-0 ps:fx l,t:0 m-t:50px hv-p-l:20px ts:all bs:2 {
     'bg:orange':  btc,
-    'bg:prim':   !btc
+    'bg:prim scy:1n':   !btc
   }">{btc ? '฿': '$'}</a>
+  
+  <a onclick={handleToggleShowLimiters} 
+    class="c:white p:15px-15px br:0-50pc-50pc-0 ps:fx l,t:0 m-t:100px hv-p-l:20px ts:all bs:2 bg:black fu-funnel ac-scy:1n"></a>
+    
+  <div class="ps:fx bg:black l,t:0 m-t:150px c:white trl:100npc-0 ts:tf ta:l br:5px {'trl:0': showLimiters}">
+    <a each={limiter in limiters} onclick={handleLimiterClick(limiter, index)} class="dp:bk p:10px bd-b-w:1px {
+      'bg:black c:white':  !limiter.active,
+      'bg:white c:black':  limiter.active
+    }">
+      <i class="fu-funnel ts:tf fs:80pc p-r:5px {'scy:1n': !limiter.active}" />
+      {limiter.name}
+    </a>
+  </div>
 
   <script>
     this.maxLength      = 15;
     this.showMax        = opts.showMax || 36;
     this.showMaxMarkets = opts.showMaxMarkets || 3;
-    this.btc        = true;
-    this.trash      = true;
-    this.filters    = [];
+    this.btc            = true;
+    this.showLimiters   = true;
+    this.matchers       = [];
+    
+    this.limiters   = [
+      { name: 'price 0 - 10000',  key: 'stats.price.sat', min: 1, max: 10000, active: 0 },
+      { name: 'vol 200k min',     key: 'stats.volume', min: 200000, active: 1 },
+      { name: 'supply 1kk max',   key: 'stats.supply', max: 1000000, active: 0 }
+    ];
+    
     this.sorters    = [
-      { name: 'rank',   key: 'stats.cap', active: 1 },
+      { name: 'cap',    key: 'stats.cap', active: 1 },
       { name: 'volume', key: 'stats.volume', active: 0 },
       { name: 'change', key: 'stats.change.day', active: 0 },
       { name: 'price',  key: 'stats.price.sat', active: 0 },
@@ -87,8 +100,8 @@
       { name: 'symbol', key: 'symbol', active: 0 },
       { name: 'name',   key: 'name', active: 0 },
     ];
-
-    this.coins = sortCoins.bind(this)(opts.coins, this.sorters) || filterCoins(opts.coins, this.filters);
+    
+    this.coins = sortCoins.bind(this)(opts.coins, this.sorters);
     
     // this.on('update', () => {
     //   console.log('update');
@@ -98,48 +111,53 @@
     // })
 
     this.handleClickCurrencer = (e) => (this.btc = !this.btc);
-    this.handleClickTrash     = (e) => {
-      this.trash = !this.trash;
-      this.coins = sortCoins.bind(this)(this.opts.coins, this.sorters);
-      //console.log(this.coins);
-    }
+    this.handleToggleShowLimiters = (e) => (this.showLimiters = !this.showLimiters);
 
-    this.handleClickSorter = (sorter, index) => (e) => {
+    this.handleSorterClick = (sorter, index) => (e) => {
       e.preventUpdate = true;
       this.sorters.map( (s, i) => index !== i && (s.active = 0) || s);
       sorter.active = sorter.active > 0 ? -1 : 1;
-      // this.sorters.splice(index, 1);
-      // this.sorters.unshift(sorter);
-      this.update({ coins: sortCoins.bind(this)(filterCoins(opts.coins, this.filters), this.sorters) });
-      //console.log(sorter, index, this);
+      this.update({ coins: sortCoins.bind(this)(opts.coins, this.sorters, true) });
+    }
+    
+    this.handleLimiterClick = (limiter, index) => (e) => {
+      e.preventUpdate = true;
+      limiter.active = limiter.active > 0 ? 0 : 1;
+      this.update({ coins: sortCoins.bind(this)(opts.coins, this.sorters) });
     }
 
-    this.handleFilterAdd = (e) => {
+    this.handeMatcherAdd = (e) => {
       let val = e.target.textContent;
       if(e.keyCode === 13 && val && val.length > 1){
-        this.filters.push(val.toLowerCase());
+        this.matchers.push({ name: val.toLowerCase(), active: 1 });
         e.target.textContent = '';
-        this.update({ coins: filterCoins(this.coins, this.filters) });
+        this.update({ coins: matchCoins(this.coins, this.matchers) });
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
     }
 
-    this.handleFilterRemove = (e) => {
+    this.handleMatcherRemove = (e) => {
       e.preventUpdate = true;
       let val = e.target.textContent;
-      this.filters = this.filters.filter(filter => filter !== val);
-      this.update({ coins: sortCoins.bind(this)(filterCoins(opts.coins, this.filters), this.sorters) })
+      this.matchers = this.matchers.filter(matcher => matcher.name !== val);
+      this.update({ coins: sortCoins.bind(this)(opts.coins, this.sorters) })
     }
 
     this.handleShowMore = (e) => {
       this.showMax = this.showMax * 2;
     }
 
-    function sortCoins(coins, sorters){
-      if(this.trash)
-        coins = coins.filter(coin => coin.stats && !coin.stats.trash)
+    function sortCoins(coins, sorters, onlySort){
+      coins = !!onlySort && this.coins || coins;
+      
+      if(!onlySort && this.matchers.length)
+        coins = matchCoins(coins, this.matchers);
+      
+      if(!onlySort && this.limiters.filter(limiter => limiter.active).length)
+        coins = limitCoins(coins, this.limiters);
+        
       return coins.sort( (a, b) => {
         return sorters.filter(sorter => sorter.active)
           .map(sorter => {
@@ -151,11 +169,29 @@
           }).find(val => val !== 0);
       })
     }
-
-    function filterCoins(coins, filters){
-      return coins.filter(coin => 
-        coin.tags.filter(filter => filters.includes(filter)).length === filters.length
+    
+    function limitCoins(coins, limiters){
+      return coins.filter( coin => 
+        limiters.filter( f => 
+          f.active ? isInRange(f, f.key.split('.').reduce((o, i) => o[i], coin)) : true
+        ).length === limiters.length
       );
+      
+      function isInRange({ max, min }, value){
+        min = min || 0;
+        if(max) 
+          return max >= value && min <= value ? 1 : 0;
+        if(min)
+          return min <= value ? 1 : 0;
+        
+        return true;
+      }
+    }
+
+    function matchCoins(coins, matchers, key = 'tags'){
+      return coins.filter( coin => 
+        matchers.filter( matcher => coin[key].join('').includes(matcher.name) ).length === matchers.length
+      )
     }
 
   </script>
