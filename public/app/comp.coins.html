@@ -18,7 +18,7 @@
         </span>
         
         <span each={filter in filters} onclick={handleFilterRemove}>{filter}</span>
-        <span class="bg:white-! p:10px mnw:150px c:black" contenteditable="true" onkeydown={handleFilterAdd} placeholder="filter"></span>
+        <span class="bg:white-! p:10px mnw:150px c:black" contenteditable="true" onkeydown={handleFilterAdd} placeholder="filter eg:bittrex"></span>
       </div>
       <div class="ta:r fs:80pc p:5px-10px c:grey">
         visible {coins.length} / {opts.coins.length} coins
