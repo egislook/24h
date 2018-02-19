@@ -5,28 +5,8 @@ function appActions(){
     INIT_APP: function({ url, app }, cb){
       console.log('ACTION_APP_INIT', 'v' + this.VER);
       this.store('app').set({ version: this.VER });
-      
+
       return this.act('GET_ALL_CONTENT', { url })
-        .then(content => this.act('INIT_ROUTER', { app }));
-    },
-
-    INIT_ROUTER: function({ app }){
-      //Server router init
-      if(this.SERVER)
-        return app.use('/:page?', (req, res) => {
-          this.act('APP_ROUTE', {
-            page:   req.params.page,
-            query:  req.query
-          });
-          res.send(res.render());
-        });
-
-      //Client router init
-      route(page => this.act('APP_ROUTE', { page, query: route.query() }));
-      route.base('/');
-      route.start(1);
-      // init app
-      riot.mount('tag-app');
     },
 
     GET_CONTENT: function({ url }){
@@ -41,7 +21,7 @@ function appActions(){
       const links = [
         !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/coins.json'    || url + '/data/coins.json',
         !this.DEV && 'https://api.coinmarketcap.com/v1/ticker/?limit=9999'  || url + '/data/prices.json',
-        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/extras.json'    || url + '/data/extras.json',
+        !this.DEV && 'https://coinmarks-e92c0.firebaseio.com/extras.json'   || url + '/data/extras.json',
       ]
       return Promise.all( links.map(link => fetch(link).then(res => res.json())) )
         .then( ([coins, prices, extras]) => {
@@ -58,9 +38,10 @@ function appActions(){
         })
     },
 
-    APP_ROUTE: function({ page, query }){
-      console.log('ACTION_APP_ROUTE');
-      this.act('SET_COIN', { symbol: page });
+    APP_ROUTE: function(req, res, next){
+      console.log('ACTION_APP_ROUTE', req.params, req.query, req.cookies.get());
+      this.act('SET_COIN', { symbol: req.params.page });
+      next && next();
     },
 
     SET_COIN: function({ symbol }){

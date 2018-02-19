@@ -6,7 +6,8 @@
   "scripts": {
     "helloWorld": "echo 'hello world;'",
     "start": "node index.js",
-    "watch": "nodemon -e html,js --watch ../_packs/riothing --watch ./ index.js",
+    "watch": "export NODE_ENV=development|| set NODE_ENV=development&& nodemon -e html,js --watch ../_packs/riothing --watch ./ index.js",
+    "prod": "nodemon -e html,js --watch ./ index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "export NODE_ENV=development|| set NODE_ENV=development&& nodemon -e html,js index.js"
   },
@@ -14,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.2",
-    "riothing": "^0.1.6"
+    "riothing": "^0.1.7"
   },
   "devDependencies": {
     "nodemon": "^1.14.7"

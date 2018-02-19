@@ -1,0 +1,7 @@
+[
+  {
+    "route":  "/:page?",
+    "action": "APP_ROUTE"
+  },
+  {}
+]

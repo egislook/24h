@@ -1,12 +1,12 @@
 <tag-app>
   <div class="ts:ft-1s {'blr:1px': splash} h:100pc">
-    <comp-coins coins={coins} ago={ago} version={version}/>
-    <page-coin ago={ago} coin={coin} />
+    <comp-coins coins={coins} ago={utils.ago} version={version}/>
+    <page-coin coin={coin} ago={utils.ago} />
   </div>
 
   <script>
     this.mixin('riothing');
-  
+
     const { coin, coins } = this.store('coins').get();
     this.coin     = coin;
     this.coins    = coins;
