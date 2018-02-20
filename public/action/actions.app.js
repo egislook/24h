@@ -5,7 +5,7 @@ function appActions(){
     INIT_APP: function({ url, app }, cb){
       console.log('ACTION_APP_INIT', 'v' + this.VER);
       this.store('app').set({ version: this.VER });
-
+      !this.SERVER && this.DEV && this.act('TRIGGER_DEV_TIMESTAMP_TICKER', 2000);
       return this.act('GET_ALL_CONTENT', { url })
     },
 
