@@ -15,6 +15,7 @@ const CFG = {
 CFG.url = CFG.DEV ? `http://${CFG.IP}:${CFG.PORT}` : 'https://coinmarks.herokuapp.com';
 
 app.use('/', express.static(CFG.PUB_DIR));
+CFG.DEV && app.use('/packs', express.static('../../_PACKS'));
 app.listen(CFG.PORT, () => console.log('APP => ' + CFG.url));
 
 Riothing(CFG, { app, routes: require(CFG.PUB_DIR + '/data/routes.json') } )

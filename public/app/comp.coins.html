@@ -1,55 +1,58 @@
 <comp-coins>
-
-  <div class="md-dp:flx ai:c mdx-p-t:20px">
-    <div class="p:10px c:black200 md-m-l:30px ps:rl mdx-ta:r">
-      <h1 class="p:0 fs:200pc ls:2px fw:300 lh:0.8">coinmarks</h1><small class="fs:60pc c:black200 ps:ab r,t:0 m:2px">v {opts.version}</small>
-      <p class="fs:90pc fw:600 c:prim">what can be built in 24h</p>
-    </div>
-
-    <div class="md-p-t:40px p-b:10px m-r:0">
-
-      <div class="p:7px-15px_span m:2px_span c:white ta:r fs:90pc crs:pt_span ts:bg_span">
-        
-        <span each={matcher in matchers} onclick={handleMatcherRemove} class="bg:black c:white">{matcher.name}</span>
-        <span class="bg:white p:10px mnw:150px c:black" contenteditable="true" onkeydown={handeMatcherAdd} placeholder="search eg:bittrex"></span>
+  <div class="of:hd">
+    <div class="ts:tf {'trx:200px': showLimiters}">
+      <div class="md-dp:flx ai:c mdx-p-t:20px">
+        <div class="p:10px c:black200 md-m-l:30px ps:rl mdx-ta:r">
+          <h1 class="p:0 fs:200pc ls:2px fw:300 lh:0.8">coinmarks</h1><small class="fs:60pc c:black200 ps:ab r,t:0 m:2px">v {opts.version}</small>
+          <p class="fs:90pc fw:600 c:prim">what can be built in 24h</p>
+        </div>
+    
+        <div class="md-p-t:40px p-b:10px m-r:0">
+    
+          <div class="p:7px-15px_span m:2px_span c:white ta:r fs:90pc crs:pt_span ts:bg_span">
+            
+            <span each={matcher in matchers} onclick={handleMatcherRemove} class="bg:black c:white">{matcher.name}</span>
+            <span class="bg:white p:10px mnw:150px c:black" contenteditable="true" onkeydown={handeMatcherAdd} placeholder="search eg:bittrex"></span>
+          </div>
+          <div class="ta:r fs:80pc p:5px-10px c:grey">
+            visible {coins.length} / {opts.coins.length} coins
+          </div>
+    
+          <div class="fs:90pc m-tr:5px m:2px_a ta:r">
+            <a onclick={handleSorterClick(sorter, index)} each={sorter, index in sorters} class="p:7px-15px-7px-10px ts:bg {
+              'bg:black c:white':   sorter.active,
+              'bg:silver c:black':  !sorter.active
+            }">
+              <i class="fu-sort ts:tf {'scy:1n': sorter.active > 0}" />
+              {sorter.name}
+            </a>
+            
+          </div>
+    
+        </div>
       </div>
-      <div class="ta:r fs:80pc p:5px-10px c:grey">
-        visible {coins.length} / {opts.coins.length} coins
-      </div>
-
-      <div class="fs:90pc m-tr:5px m:2px_a ta:r">
-        <a onclick={handleSorterClick(sorter, index)} each={sorter, index in sorters} class="p:7px-15px-7px-10px ts:bg {
-          'bg:black c:white':   sorter.active,
-          'bg:silver c:black':  !sorter.active
-        }">
-          <i class="fu-sort ts:tf {'scy:1n': sorter.active > 0}" />
-          {sorter.name}
+    
+      <div class="p-b:20px">
+        <a href="/{coin.symbol}" each={coin, i in coins}
+          if={i < showMax}
+          key="symbol"
+          class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc hv-bs:2 ts:bs fs:80pc ps:rl ts:all">
+          <img class="dp:ib w:25px m-b:5px" src="{coin.logo}" /><br/>
+          { coin.name.substring( 0, maxLength ) }
+          <span class="r,t:0 p:5px ps:ab fs:80pc">
+            <strong class="bd-c:silver800 bd-w:1px p:1px-3px br:2px" title={opts.ago(coin.listed)}>{coin.stage}</strong>
+            {coin.symbol}
+          </span>
+          <span if={coin.stats} class="l,t:0 p:5px ps:ab fs:80pc fw:600">
+            {btc && coin.stats.price.btc != 1 ? coin.stats.price.sat : coin.stats.price.usd}
+            <strong class="{'c:green': coin.stats.up, 'c:red': !coin.stats.up}">{coin.stats.change.day}%</strong>
+          </span>
+          <span class="l,b:0 p:5px ps:ab fs:80pc" title="volume">{coin.stats.shortVolume}</span>
+          <span class="r,b:0 p:5px ps:ab fs:80pc" title="supply">{coin.stats.shortSupply} ({coin.stats.estimated})</span>
+    
         </a>
-        
       </div>
-
     </div>
-  </div>
-
-  <div class="p-b:20px">
-    <a href="/{coin.symbol}" each={coin, i in coins}
-      if={i < showMax}
-      key="symbol"
-      class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc hv-bs:2 ts:bs fs:80pc ps:rl ts:all">
-      <img class="dp:ib w:25px m-b:5px" src="{coin.logo}" /><br/>
-      { coin.name.substring( 0, maxLength ) }
-      <span class="r,t:0 p:5px ps:ab fs:80pc">
-        <strong class="bd-c:silver800 bd-w:1px p:1px-3px br:2px" title={opts.ago(coin.listed)}>{coin.stage}</strong>
-        {coin.symbol}
-      </span>
-      <span if={coin.stats} class="l,t:0 p:5px ps:ab fs:80pc fw:600">
-        {btc && coin.stats.price.btc != 1 ? coin.stats.price.sat : coin.stats.price.usd}
-        <strong class="{'c:green': coin.stats.up, 'c:red': !coin.stats.up}">{coin.stats.change.day}%</strong>
-      </span>
-      <span class="l,b:0 p:5px ps:ab fs:80pc" title="volume">{coin.stats.shortVolume}</span>
-      <span class="r,b:0 p:5px ps:ab fs:80pc" title="supply">{coin.stats.shortSupply} ({coin.stats.estimated})</span>
-
-    </a>
   </div>
 
   <a if={showMax < coins.length} class="fu-plus p:20px bg:prim c:white br:50pc-50pc-0-50pc ps:fx r,b:0 bs:2 m:10px" onclick={handleShowMore}>
@@ -62,17 +65,24 @@
     'bg:orange':  btc,
     'bg:prim scy:1n':   !btc
   }">{btc ? '฿': '$'}</a>
-  
-  <a onclick={handleToggleShowLimiters} 
-    class="c:white p:15px-15px br:0-50pc-50pc-0 ps:fx l,t:0 m-t:100px hv-p-l:20px ts:all bs:2 bg:black fu-funnel ac-scy:1n"></a>
     
-  <div class="ps:fx bg:black l,t:0 m-t:150px c:white trl:100npc-0 ts:tf ta:l br:5px {'trl:0': showLimiters}">
-    <a each={limiter in limiters} onclick={handleLimiterClick(limiter, index)} class="dp:bk p:10px bd-b-w:1px {
-      'bg:black c:white':  !limiter.active,
-      'bg:white c:black':  limiter.active
+  <div class="jc:c ps:fx bg:white bs:4 p:10px w:200px h:100vh l,t:0 ts:tf ta:l {'trx:100npc': !showLimiters}">
+    <h3 class="c:prim m-t:20px">Filters</h3>
+    <p class="m-b:20px fs:90pc">Click on any of the filters</p>
+    <a each={limiter in limiters} onclick={handleLimiterClick(limiter, index)} class="p:7px-15px br:5px bd-w:1px m:2px {
+      'bg:black c:white':  limiter.active,
+      'bg:white c:black':  !limiter.active
     }">
-      <i class="fu-funnel ts:tf fs:80pc p-r:5px {'scy:1n': !limiter.active}" />
+      <i class="fu-funnel ts:tf fs:70pc p-r:5px {'scy:1n': !limiter.active}" />
       {limiter.name}
+    </a>
+    <a onclick={handleToggleShowLimiters} 
+      class="p:15px-15px br:0-50pc-50pc-0 ps:ab r,t:0 trx:100pc m-t:100px fs:80pc {
+        'bg:black bs:2 c:white': !showLimiters,
+        'bg:white bs:1': showLimiters
+      }">
+      {calcActiveLimiters()}
+      <i class="fu-funnel" />
     </a>
   </div>
 
@@ -109,6 +119,8 @@
     //     console.log('before animation');
     //   });
     // })
+    
+    this.calcActiveLimiters = () => (this.limiters.filter(l => l.active).length)
 
     this.handleClickCurrencer = (e) => (this.btc = !this.btc);
     this.handleToggleShowLimiters = (e) => (this.showLimiters = !this.showLimiters);
