@@ -41,7 +41,9 @@ function storeCoins(initState){
     this.symbol   = data.symbol;
     this.rank     = data.rank;
     this.link     = data.link;
-    this.logo     = data.logo || data.id && `https://files.coinmarketcap.com/static/img/coins/32x32/${data.id}.png`;
+    this.logo     = data.logo || data.id 
+      && `https://www.livecoinwatch.com/images/icons32/${data.symbol.toLowerCase()}.png`
+      //`https://files.coinmarketcap.com/static/img/coins/32x32/${data.id}.png`;
     this.supply   = data.supply;
     this.listed   = data.listed;
     this.markets  = data.extras   && data.extras.markets && getMarkets(data.extras.markets, this.symbol);
