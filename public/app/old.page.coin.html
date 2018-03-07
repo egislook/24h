@@ -1,15 +1,15 @@
-<page-coin>
-    <a if={false} href="/" class="ps:fx t,l:0 h,w:100pc bg:blacka3 ts:all {
+<old-page-coin>
+    <a href="/" class="ps:fx t,l:0 h,w:100pc bg:blacka3 ts:all {
       'op:0 vsb:hd': !opts.coin,
       'op:1 vsb:vs': opts.coin
     }"/>
 
-    <div class="bg:white ps:fx h:100pc r,t:0 mnw:65pc mdx-w:100pc bs:5 of:auto ts:all z:2 {
-      'trl:100pc-0': !opts.coin
+    <div class="bg:white ps:fx h:100pc t,l:0 mnw:50pc bs:5 of:auto ts:all {
+      'trl:100npc-0': !opts.coin
     }">
 
       <div if={opts.coin}>
-        <a href="/" class="fs:140pc c:black200 fu-arrow-right p:20px-30px md-t,l:0 md-ps:ab mdx-ps:fx mdx-b,r:0 bg:white" />
+        <a href="/" class="fs:140pc c:black200 fu-arrow-left p:20px-30px md-t,l:0 md-ps:ab mdx-ps:fx mdx-b,r:0 bg:white" />
 
         <div class="dp:flx p:25px ai:c">
           <div>
@@ -65,4 +65,4 @@
   <script>
     //console.log('Coin page: ', opts)
   </script>
-</page-coin>
+</old-page-coin>

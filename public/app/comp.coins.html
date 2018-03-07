@@ -1,96 +1,102 @@
 <comp-coins>
-  <div class="of:hd">
-    <div class="ts:tf {'trx:175px': showLimiters}">
-      <div class="md-dp:flx ai:c mdx-p-t:20px">
-        <div class="p:10px c:black200 md-m-l:30px ps:rl mdx-ta:r">
-          <h1 class="p:0 fs:200pc ls:2px fw:300 lh:0.8">coinmarks</h1><small class="fs:60pc c:black200 ps:ab r,t:0 m:2px">v {opts.version}</small>
-          <p class="fs:90pc fw:600 c:prim">what can be built in 24h</p>
-        </div>
-    
-        <div class="md-p-t:40px p-b:10px m-r:0">
-    
-          <div class="p:7px-15px_span m:2px_span c:white ta:r fs:90pc crs:pt_span ts:bg_span">
-            
-            <span each={matcher in matchers} onclick={handleMatcherRemove} class="bg:black c:white">{matcher.name}</span>
-            <span class="bg:white p:10px mnw:150px c:black" contenteditable="true" onkeydown={handeMatcherAdd} placeholder="search eg:bittrex"></span>
-          </div>
-          <div class="ta:r fs:80pc p:5px-10px c:grey">
-            visible {coins.length} / {opts.coins.length} coins
-          </div>
-    
-          <div class="fs:90pc m-tr:5px m:2px_a ta:r">
-            <a onclick={handleSorterClick(sorter, index)} each={sorter, index in sorters} class="p:7px-15px-7px-10px ts:bg {
-              'bg:black c:white':   sorter.active,
-              'bg:silver c:black':  !sorter.active
-            }">
-              <i class="fu-sort ts:tf {'scy:1n': sorter.active > 0}" />
-              {sorter.name}
-            </a>
-            
-          </div>
-    
-        </div>
-      </div>
-    
-      <div class="p-b:20px">
-        <a href="/{coin.symbol}" each={coin, i in coins}
-          if={i < showMax}
-          key="symbol"
-          class="dp:ib p:20px bs:1 m:5px bg:white mnw:200px smx-mnw:46pc fs:80pc ps:rl">
-          <img class="dp:ib w:25px m-b:5px" src="{coin.logo}" /><br/>
-          { coin.name.substring( 0, maxLength ) }
-          <span class="r,t:0 p:5px ps:ab fs:80pc">
-            <strong class="bd-c:silver800 bd-w:1px p:1px-3px br:2px" title={opts.ago(coin.listed)}>{coin.stage}</strong>
-            {coin.symbol}
-          </span>
-          <span if={coin.stats} class="l,t:0 p:5px ps:ab fs:80pc fw:600">
-            {btc && coin.stats.price.btc != 1 ? coin.stats.price.sat : coin.stats.price.usd}
-            <strong class="{'c:green': coin.stats.up, 'c:red': !coin.stats.up}">{coin.stats.change.day}%</strong>
-          </span>
-          <span class="l,b:0 p:5px ps:ab fs:80pc" title="volume">{coin.stats.shortVolume}</span>
-          <span class="r,b:0 p:5px ps:ab fs:80pc" title="cap">{coin.stats.shortCap}</span>
-    
+  <aside class="mdx-w:100pc md-w:375px bd-w-r:1px bs:1 ps:ab l,t:0 h:100pc bg:whitea7 of:hd ps:rl">
+      
+    <div class="p:10px bg:lg-262deg-prim-sec bs:2 ps:ab w:100pc z:1">
+      
+      <div class="bd:1px-sld-whitea5 p:10px c:white dp:flx">
+        <a 
+          each={matcher in matchers} 
+          onclick={handleMatcherRemove} 
+          class="bg:white p:4px-8px m-r:2px br:2px c:sec fw:600 fs:90pc">
+            {matcher.name}
         </a>
+        
+        <span 
+          contenteditable="true" 
+          onkeydown={handeMatcherAdd} 
+          placeholder="search eg:bitcoin"
+          class="w:100pc p:3px" />
       </div>
+      
+      <div class="fs:90pc m:0_a ta:r dp:flx jc:sb">
+        <a 
+          each={sorter, index in sorters}
+          onclick={handleSorterClick(sorter, index)}
+          class="p:2px-7px ts:bg bd-w:1px bd-t-w:0 bd-c:whitea5 fw:600 flxg:1 {
+            'bg:white c:sec':   sorter.active,
+            'c:whitea5':        !sorter.active
+          }">
+          <i class="fu-sort ts:tf {'scy:1n': sorter.active > 0}" />
+          {sorter.name}
+        </a>
+        
+      </div>
+      
     </div>
-  </div>
-
-  <a if={showMax < coins.length} class="fu-plus p:20px bg:prim c:white br:50pc-50pc-0-50pc ps:fx r,b:0 bs:2 m:10px" onclick={handleShowMore}>
-    <span class="ps:ab b,r:0 p:4px bg:white c:black mnw,mnh:15px fw:600 fs:60pc br:7px-0-0 ff:Questrial">
-      {coins.length - showMax}
-    </span>
-  </a>
-
-  <a onclick={handleClickCurrencer} class="c:white p:10px-15px br:0-50pc-50pc-0 ps:fx l,t:0 m-t:50px hv-p-l:20px ts:all bs:2 {
-    'bg:orange':  btc,
-    'bg:prim scy:1n':   !btc
-  }">{btc ? '฿': '$'}</a>
     
-  <div class="jc:c ps:fx bg:white bs:4 p:10px w:200px h:100vh l,t:0 ts:tf ta:l {'trx:100npc': !showLimiters}">
-    <h3 class="c:prim m-t:20px">Filters</h3>
-    <p class="m-b:20px fs:90pc">Click on any of the filters</p>
-    <a each={limiter in limiters} onclick={handleLimiterClick(limiter, index)} class="p:7px-15px br:5px bd-w:1px m:2px {
-      'bg:black c:white':  limiter.active,
-      'bg:white c:black':  !limiter.active
-    }">
-      <i class="fu-funnel ts:tf fs:70pc p-r:5px {'scy:1n': !limiter.active}" />
-      {limiter.name}
+    <div class="of:auto w,h:100pc p-r:20px p-tb:90px md-bz:initial">
+      <a each={coin, i in coins} 
+        href="/{coin.symbol}" 
+        if={i < showMax}
+        key="symbol"
+        class="dp:flx p:20px-15px ai:c ta:l c:black100_p ts:all bd-r:3px-sld-white {
+          'bs:2 bg:white bd-r:3px-sld-prim': opts.coin && coin.symbol === parent.opts.coin.symbol
+        }">
+        
+          <img class="dp:ib w:25px m-b:5px m:0 w,h:45px { 'gs:1': !opts.coin || coin.symbol !== parent.opts.coin.symbol } " src="{coin.logo}" />
+          <div class="m-l:20px">
+            <h3>{ coin.name.substring( 0, maxLength ) }</h3>
+            <p>
+              <strong class="bd-c:silver800 bg:white bd-w:1px p:1px-3px br:2px" title={opts.ago(coin.listed)}>{coin.stage}</strong>
+              {coin.symbol}
+            </p>
+          </div>
+          <p class="m-r:0 ta:r">
+            <strong class="{'c:green': coin.stats.up, 'c:red': !coin.stats.up} dp:ib m-r:0">{coin.stats.change.day}%</strong> <br />
+            <strong>{btc && coin.stats.price.btc != 1 ? coin.stats.price.sat + 'sat' : coin.stats.price.usd + '$'} </strong>
+          </p>
+      </a>
+    </div>
+    
+    <a if={showMax < coins.length} 
+      class="p:10px-20px fs:90pc bg:lg-262deg-prim-sec c:white br:20px-20px-0 ps:ab b:0 bs:2" onclick={handleShowMore}>
+      {coins.length - showMax} More
     </a>
-    <a onclick={handleToggleShowLimiters} 
-      class="p:15px-15px br:0-50pc-50pc-0 ps:ab r,t:0 trx:100pc m-t:100px fs:80pc {
-        'bg:black bs:2 c:white': !showLimiters,
-        'bg:white bs:1': showLimiters
-      }">
-      {calcActiveLimiters()}
-      <i class="fu-funnel" />
-    </a>
-  </div>
+    
+    <a onclick={handleClickCurrencer} class="p:8px-18px br:20px-20px-0-20px bd-w:2px b,r:0 m-t:10px ps:ab ts:all bs:2 fw:600 z:2 bg:white {
+      'c:orange':  btc,
+      'c:green':   !btc
+    }">{btc ? '฿': '$'}</a>
+      
+    <div class="jc:c ps:fx bg:white bs:4 p:10px md-w:375px w:100pc h:100vh l,t:0 ts:tf ta:l z:2 {'trx:100npc': !showLimiters}">
+      <h3 class="c:prim m-t:20px">Filters</h3>
+      <p class="m-b:20px fs:90pc">Click on any of the filters</p>
+      <a 
+        each={limiter in limiters} 
+        onclick={handleLimiterClick(limiter, index)} 
+        class="p:7px-15px br:5px bd-w:1px m:2px {
+          'bg:black c:white':  limiter.active,
+          'bg:white c:black':  !limiter.active
+        }">
+          <i class="fu-funnel ts:tf fs:70pc p-r:5px {'scy:1n': !limiter.active}" />
+          {limiter.name}
+      </a>
+      <a onclick={handleToggleShowLimiters} 
+        class="p:15px-15px br:0-50pc-50pc-0 ps:ab r,b:0 trx:100pc m-b:50px fs:80pc ts:tf bg:black bs:2 c:white {
+          'scx:1n': showLimiters
+        }">
+        <span if={!showLimiters}>{calcActiveLimiters()}</span>
+        <i class="fu-funnel" />
+      </a>
+    </div>
+    
+  </aside>
 
   <script>
     this.maxLength      = 15;
     this.showMax        = opts.showMax || 36;
     this.showMaxMarkets = opts.showMaxMarkets || 3;
-    this.btc            = true;
+    this.btc            = false;
     this.showLimiters   = false;
     this.matchers       = [];
     
@@ -109,13 +115,11 @@
     
     this.sorters    = [
       { name: 'cap',    key: 'stats.cap', active: 1 },
-      { name: 'volume', key: 'stats.volume', active: 0 },
-      { name: 'change', key: 'stats.change.day', active: 0 },
-      { name: 'price',  key: 'stats.price.sat', active: 0 },
-      { name: 'supply', key: 'stats.supply', active: 0 },
-      { name: 'listed', key: 'listed', active: 0 },
-      { name: 'symbol', key: 'symbol', active: 0 },
-      { name: 'name',   key: 'name', active: 0 },
+      { name: 'vol', key: 'stats.volume', active: 0 },
+      { name: '%', key: 'stats.change.day', active: 0 },
+      { name: '$',  key: 'stats.price.sat', active: 0 },
+      { name: 'sup', key: 'stats.supply', active: 0 },
+      { name: 'age', key: 'listed', active: 0 },
     ];
     
     this.coins = sortCoins.bind(this)(opts.coins, this.sorters);
@@ -148,7 +152,7 @@
     this.handeMatcherAdd = (e) => {
       let val = e.target.textContent;
       if(e.keyCode === 13 && val && val.length > 1){
-        this.matchers.push({ name: val.toLowerCase(), active: 1 });
+        this.matchers.push({ name: val.toLowerCase().trim(), active: 1 });
         e.target.textContent = '';
         this.update({ coins: matchCoins(this.coins, this.matchers) });
         e.preventDefault();
@@ -159,7 +163,7 @@
 
     this.handleMatcherRemove = (e) => {
       e.preventUpdate = true;
-      let val = e.target.textContent;
+      let val = e.target.textContent.trim();
       this.matchers = this.matchers.filter(matcher => matcher.name !== val);
       this.update({ coins: sortCoins.bind(this)(opts.coins, this.sorters) })
     }
