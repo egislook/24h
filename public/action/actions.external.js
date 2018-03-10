@@ -9,10 +9,10 @@ function externalActions(){
     },
 
     TRIGGER_DEV_TIMESTAMP_TICKER: function(delay){
-      setInterval(intervalFn, delay || 5000);
+      setInterval(intervalFn, delay || 2000);
       function intervalFn(){
         fetch('/cfg').then(res => res.json())
-          .then(({ TIMESTAMP, READY }) => new Date().getTime() - TIMESTAMP < delay && READY && location.reload());
+          .then(({ READY, SYNC }) => !SYNC && READY && location.reload());
       }
     }
   }

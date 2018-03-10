@@ -12,8 +12,8 @@ const CFG = {
   VER:        process.env.npm_package_version,
   CLIENTLESS: false,
   SERV_STYLE: true,
-  TIMESTAMP:  new Date().getTime(),
-  READY:      false
+  READY:      false,
+  SYNC:       false,
 };
 CFG.url = CFG.DEV ? `http://${CFG.IP}:${CFG.PORT}` : 'https://coinmarks.herokuapp.com';
 
@@ -27,8 +27,12 @@ app.use('/', express.static(CFG.PUB_DIR));
 **/
 
 if(CFG.DEV){
-  app.use('/packs', express.static('../../_PACKS'));
+  app.use('/packs', express.static('../../_packs'));
   app.get('/cfg', (req, res) => { res.json(CFG) });
+  app.use((req, res, next) => {
+    CFG.READY ? CFG.SYNC = true : false;
+    next();
+  });
   app.listen(CFG.PORT, () => console.log('APP => ' + CFG.url));
 }
 
