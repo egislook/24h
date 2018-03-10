@@ -150,7 +150,7 @@ input, button, select, option, textarea{font-size: 100%; font-family: inherit;}
 .trx\:100pc{transform:translateX(100%);}
 .m-t\:100px{margin-top:100px;}
 .bd-w-r\:1px{border-width-right:1px;}
-.bg\:whitea7{background:rgba(255,255,255,0.7);}
+.bg\:whitea5{background:rgba(255,255,255,0.5);}
 .bg\:lg-262deg-prim-sec{background:linear-gradient(262deg, #ff7854, #fd267d);}
 .z\:1{z-index:1;}
 .bd\:1px-sld-whitea5{border:1px solid rgba(255,255,255,0.5);}
@@ -164,8 +164,6 @@ input, button, select, option, textarea{font-size: 100%; font-family: inherit;}
 .bd-c\:whitea5{border-color:rgba(255,255,255,0.5);}
 .flxg\:1{flex-grow:1;}
 .c\:whitea5{color:rgba(255,255,255,0.5);}
-.w\,h\:100pc{width:100%;height:100%;}
-.p-r\:20px{padding-right:20px;}
 .p-tb\:90px{padding-top:90px;padding-bottom:90px;}
 .p\:20px-15px{padding:20px 15px;}
 .c\:black100_p p{color:#6f6f6f;}
@@ -193,6 +191,7 @@ input, button, select, option, textarea{font-size: 100%; font-family: inherit;}
 .md-m-l\:30px{margin-left:30px;}
 .md-p-t\:40px{padding-top:40px;}
 .md-w\:375px{width:375px;}
+.md-w\:105pc{width:105%;}
 .md-bz\:ini{box-sizing:initial;}
 }
 @media only screen and (max-width: 769px) {
