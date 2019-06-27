@@ -10,6 +10,7 @@ function externalActions(){
 
     TRIGGER_DEV_TIMESTAMP_TICKER: function(delay){
       setInterval(intervalFn, delay || 2000);
+      
       function intervalFn(){
         fetch('/cfg').then(res => res.json())
           .then(({ READY, SYNC }) => !SYNC && READY && location.reload());
